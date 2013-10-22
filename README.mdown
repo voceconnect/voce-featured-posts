@@ -1,0 +1,57 @@
+Voce Featured Posts
+==================
+
+Contributors: kevinlangleyjr, voceplatforms  
+Tags: featured  
+Requires at least: 3.2  
+Tested up to: 3.6.1  
+Stable tag: 0.1  
+License: GPLv2 or later  
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+## Description
+Allows a developer to easily define multiple featured-type instances for post types. These featured-type instances do not necessarily need to be named Featured, but is just another way to single out specific posts of a post type under a common label.
+When defining a featured type, a page will be added to the submenu of the post type you registered it for. This page is used to manage the order of the featured items and remove items that no longer should be featured.
+
+## Installation
+
+### As theme or plugin dependency:
+> After dropping the plugin into the containing theme or plugin, add the following:
+
+```php
+<?php
+if( ! class_exists( 'Voce_Featured_Posts' ) ) {
+	require_once( $path_to_voce_featured_posts . '/voce-featured-posts.php' );
+}
+?>
+```
+
+## Usage
+
+### Registering a Featured Type
+
+#### Parameters
+* ```$type_key``` (string) - A unique string used as the featured type key
+* ```$type_name``` (string) - A string used as the title of the featured type
+* ```$post_type``` (string) - Post type the featured type is being registered for
+* ```$sortable``` (boolean) - Adds the ability to drag/drop sort the featured items on the management page
+
+```php
+<?php
+	Voce_Featured_Posts::add_type('new-featured-type', 'New Featured Type', 'post', )
+?>
+```
+
+### Getting the Featured Post ID's
+Using the ```get_featured_ids()``` method of the ```Voce_Featured_Posts```, you can retreive the featured ids of a specific featured type and either a single post type or an array of post types
+
+```php
+<?php
+	$featured_ids = Voce_Featured_Posts::get_featured_ids( 'post', 'new-featured-type' );
+?>
+```
+
+# Changelog
+
+**0.1**  
+*Initial release.*
