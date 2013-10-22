@@ -44,7 +44,7 @@ class Voce_Featured_Posts {
 	public static function add_type( $key, $name, $post_type, $sortable = true ) {
 		$$key = array( $key => array( 'title' => $name, 'sortable' => $sortable ) );
 		if ( isset( self::$types[$post_type] ) && is_array( self::$types[$post_type] ) )
-			self::$types[$post_type] = array_merge( self::$types[$post_type], $$key ) );
+			self::$types[$post_type] = array_merge( self::$types[$post_type], $$key );
 		else
 			self::$types[$post_type] = $$key;
 
