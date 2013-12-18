@@ -1,5 +1,5 @@
 {
-    "name": "voceconnect/voce-featured-meta",
+    "name": "voceconnect/voce-featured-posts",
     "description": "Easily define multiple featured-type instances for post types.",
     "keywords": ["wordpress", "featured posts"],
     "license": "GPLv2+",
