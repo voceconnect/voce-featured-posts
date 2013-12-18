@@ -1,5 +1,7 @@
 <?php
 
+if ( ! class_exists( 'Voce_Featured_Posts' ) ) :
+
 class Voce_Featured_Posts {
 
 	/*
@@ -329,3 +331,5 @@ class Voce_Featured_Posts {
 }
 
 add_action( 'init', array( 'Voce_Featured_Posts', 'initialize' ) );
+
+endif;

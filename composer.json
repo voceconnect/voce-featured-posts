@@ -1,0 +1,16 @@
+{
+    "name": "voceconnect/voce-featured-meta",
+    "description": "Easily define multiple featured-type instances for post types.",
+    "keywords": ["wordpress", "featured posts"],
+    "license": "GPLv2+",
+    "authors": [
+        {
+            "name": "Kevin Langley Jr",
+            "email": "klangley@voceconnect.com"
+        }
+    ],
+    "type": "library",
+    "autoload": {
+        "files": ["voce-featured-posts.php"]
+    }
+}
