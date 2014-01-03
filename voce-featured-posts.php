@@ -12,7 +12,8 @@ class Voce_Featured_Posts {
 		'post' => array(
 			'featured' => array(
 				'title' => 'Featured',
-				'sortable' => true
+				'sortable' => true,
+				'post_status'  => array( 'public' )
 			)
 		)
 	);
@@ -20,6 +21,7 @@ class Voce_Featured_Posts {
 	public static function initialize() {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_metabox' ), 10, 2 );
 		add_action( 'save_post', array( __CLASS__, 'save_post' ) );
+		add_action( 'transition_post_status', array( __CLASS__, 'post_status_change' ), 10, 3 );
 		add_action( 'delete_post', array( __CLASS__, 'delete_post' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menus' ) );
 		add_action( 'wp_ajax_unfeature_post', array( __CLASS__, 'ajax_unfeature_post' ) );
@@ -43,8 +45,9 @@ class Voce_Featured_Posts {
 			self::update_featured_order();
 	}
 
-	public static function add_type( $key, $name, $post_type, $sortable = true ) {
-		$$key = array( $key => array( 'title' => $name, 'sortable' => $sortable ) );
+	public static function add_type( $key, $name, $post_type, $post_status = array( 'publish' ), $sortable = true ) {
+		$post_status = !is_array( $post_status ) ? array( $post_status ) : $post_status;
+		$$key = array( $key => array( 'title' => $name, 'sortable' => $sortable, 'post_status' => $post_status ) );
 		if ( isset( self::$types[$post_type] ) && is_array( self::$types[$post_type] ) )
 			self::$types[$post_type] = array_merge( self::$types[$post_type], $$key );
 		else
@@ -204,7 +207,7 @@ class Voce_Featured_Posts {
 	<?php
 	}
 
-	static function verify_featured_ids(&$featured_ids, $type, $post_type, $post_status){
+	private static function verify_featured_ids(&$featured_ids, $type, $post_type, $post_status){
 		$new_ids = array();
 		foreach($featured_ids as $featured_id){
 			$featured_post = get_post($featured_id);
@@ -215,8 +218,6 @@ class Voce_Featured_Posts {
 					$new_ids[] = $featured_id;
 			}
 		}
-		if($featured_ids !== $new_ids)
-			update_option(sprintf( '%s_%s_ids', $type, $post_type ), $new_ids);
 
 		return $new_ids;
 	}
@@ -310,6 +311,35 @@ class Voce_Featured_Posts {
 				if ( isset( $_REQUEST[$name . '_nonce'] ) && wp_verify_nonce( $_REQUEST[$name . '_nonce'], 'updating_' . $name ) ) {
 					$is_featured = isset( $_REQUEST[$name] );
 					self::update_is_featured( $post_id, $post_type, $is_featured, $type_key );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Update the feature status of a post depending on it new status
+	 * @param string $new_status
+	 * @param string $old_status
+	 * @param WP_Post $post
+	 */
+	static function post_status_change( $new_status, $old_status, $post ) {
+		$post_id   = $post->ID;
+		$post_type = get_post_type( $post );
+
+		if ( isset( self::$types[$post_type] ) ) {
+			foreach( self::$types[$post_type] as $feature_type => $options ) {
+				// doesn't matter if the post isn't featured
+				if ( !self::is_featured( $feature_type, $post_id ) )
+					continue;
+
+				$statuses = isset( $options['post_status'] ) ? $options['post_status'] : array();
+
+				// if the new status is not an acceptable feature type then unfeature the post
+				if ( !in_array( $new_status, $statuses ) ) {
+					self::update_is_featured( $post_id, $post_type, false, $feature_type );
+					// unset the feature name so that post will not be featured
+					$name = sprintf( '%s_%s', $feature_type, $post_type );
+					unset( $_REQUEST[$name] );
 				}
 			}
 		}
