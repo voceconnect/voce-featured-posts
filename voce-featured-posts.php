@@ -13,7 +13,7 @@ class Voce_Featured_Posts {
 			'featured' => array(
 				'title' => 'Featured',
 				'sortable' => true,
-				'post_status'  => array( 'public' )
+				'post_status'  => array( 'publish' )
 			)
 		)
 	);
@@ -21,7 +21,6 @@ class Voce_Featured_Posts {
 	public static function initialize() {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_metabox' ), 10, 2 );
 		add_action( 'save_post', array( __CLASS__, 'save_post' ) );
-		add_action( 'transition_post_status', array( __CLASS__, 'post_status_change' ), 10, 3 );
 		add_action( 'delete_post', array( __CLASS__, 'delete_post' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menus' ) );
 		add_action( 'wp_ajax_unfeature_post', array( __CLASS__, 'ajax_unfeature_post' ) );
@@ -210,11 +209,11 @@ class Voce_Featured_Posts {
 	private static function verify_featured_ids(&$featured_ids, $type, $post_type, $post_status){
 		$new_ids = array();
 		foreach($featured_ids as $featured_id){
-			$featured_post = get_post($featured_id);
-			if(!is_wp_error($featured_post) && $featured_post){
+			$featured_post_status = get_post_status( $featured_id );
+			if($featured_post_status){
 				if(!is_array($post_status) && $post_status != 'any')
 					$post_status = array($post_status);
-				if( ( $post_status == 'any' || in_array($featured_post->post_status, $post_status) ) && ( get_post_type($featured_id) == $post_type ) )
+				if( ( $post_status == 'any' || in_array($featured_post_status, $post_status) ) && ( get_post_type($featured_id) == $post_type ) )
 					$new_ids[] = $featured_id;
 			}
 		}
@@ -305,41 +304,20 @@ class Voce_Featured_Posts {
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) )
 			return $post_id;
 
-		foreach ( self::$types as $post_type => $types ) {
-			foreach ( array_keys( $types ) as $type_key ) {
-				$name = sprintf( '%s_%s', $type_key, $post_type );
-				if ( isset( $_REQUEST[$name . '_nonce'] ) && wp_verify_nonce( $_REQUEST[$name . '_nonce'], 'updating_' . $name ) ) {
-					$is_featured = isset( $_REQUEST[$name] );
-					self::update_is_featured( $post_id, $post_type, $is_featured, $type_key );
-				}
-			}
-		}
-	}
-
-	/**
-	 * Update the feature status of a post depending on it new status
-	 * @param string $new_status
-	 * @param string $old_status
-	 * @param WP_Post $post
-	 */
-	static function post_status_change( $new_status, $old_status, $post ) {
-		$post_id   = $post->ID;
-		$post_type = get_post_type( $post );
+		$post_type   = get_post_type( $post_id );
+		$post_status = get_post_status( $post_id );
 
 		if ( isset( self::$types[$post_type] ) ) {
-			foreach( self::$types[$post_type] as $feature_type => $options ) {
-				// doesn't matter if the post isn't featured
-				if ( !self::is_featured( $feature_type, $post_id ) )
-					continue;
+			foreach ( self::$types[$post_type] as $type_key => $type_args ) {
+				$name     = sprintf( '%s_%s', $type_key, $post_type );
+				$statuses = isset( $type_args['post_status'] ) ? $type_args['post_status'] : array();
 
-				$statuses = isset( $options['post_status'] ) ? $options['post_status'] : array();
-
-				// if the new status is not an acceptable feature type then unfeature the post
-				if ( !in_array( $new_status, $statuses ) ) {
-					self::update_is_featured( $post_id, $post_type, false, $feature_type );
-					// unset the feature name so that post will not be featured
-					$name = sprintf( '%s_%s', $feature_type, $post_type );
-					unset( $_REQUEST[$name] );
+				// if the post status is not an acceptable feature type status, then unfeature the post
+				if ( !in_array( $post_status, $statuses ) ) {
+					self::update_is_featured( $post_id, $post_type, false, $type_key );
+				} elseif ( isset( $_REQUEST[$name . '_nonce'] ) && wp_verify_nonce( $_REQUEST[$name . '_nonce'], 'updating_' . $name ) ) {
+					$is_featured = isset( $_REQUEST[$name] );
+					self::update_is_featured( $post_id, $post_type, $is_featured, $type_key );
 				}
 			}
 		}
