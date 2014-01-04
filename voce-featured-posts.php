@@ -11,8 +11,8 @@ class Voce_Featured_Posts {
 	public static $types = array(
 		'post' => array(
 			'featured' => array(
-				'title' => 'Featured',
-				'sortable' => true,
+				'title'        => 'Featured',
+				'sortable'     => true,
 				'post_status'  => array( 'publish' )
 			)
 		)
