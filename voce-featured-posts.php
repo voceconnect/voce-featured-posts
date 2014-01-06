@@ -11,9 +11,9 @@ class Voce_Featured_Posts {
 	public static $types = array(
 		'post' => array(
 			'featured' => array(
-				'title'        => 'Featured',
-				'sortable'     => true,
-				'post_status'  => array( 'publish' )
+				'title'       => 'Featured',
+				'sortable'    => true,
+				'post_status' => array( 'publish' )
 			)
 		)
 	);
@@ -45,12 +45,12 @@ class Voce_Featured_Posts {
 	}
 
 	public static function add_type( $key, $name, $post_type, $post_status = array( 'publish' ), $sortable = true ) {
-		$post_status = !is_array( $post_status ) ? array( $post_status ) : $post_status;
-		$$key = array( $key => array( 'title' => $name, 'sortable' => $sortable, 'post_status' => $post_status ) );
+		$post_status = is_array( $post_status ) ? $post_status : array( $post_status );
+		$type_args   = array( $key => array( 'title' => $name, 'sortable' => $sortable, 'post_status' => $post_status ) );
 		if ( isset( self::$types[$post_type] ) && is_array( self::$types[$post_type] ) )
-			self::$types[$post_type] = array_merge( self::$types[$post_type], $$key );
+			self::$types[$post_type] = array_merge( self::$types[$post_type], $type_args );
 		else
-			self::$types[$post_type] = $$key;
+			self::$types[$post_type] = $type_args;
 
 		return true;
 	}
