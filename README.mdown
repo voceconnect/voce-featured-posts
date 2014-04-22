@@ -4,8 +4,8 @@ Voce Featured Posts
 Contributors: kevinlangleyjr, voceplatforms  
 Tags: featured  
 Requires at least: 3.2  
-Tested up to: 3.6.1  
-Stable tag: 0.1  
+Tested up to: 3.9
+Stable tag: 2.1
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,5 +53,8 @@ Using the ```get_featured_ids()``` method of the ```Voce_Featured_Posts```, you 
 
 # Changelog
 
-**0.1**  
+**1.0**
 *Initial release.*
+
+**2.1**
+*Adding support for featured 'attachment'.*
