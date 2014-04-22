@@ -22,6 +22,9 @@ class Voce_Featured_Posts {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_metabox' ), 10, 2 );
 		add_action( 'save_post', array( __CLASS__, 'save_post' ) );
 		add_action( 'delete_post', array( __CLASS__, 'delete_post' ) );
+		add_action( 'add_attachment', array( __CLASS__, 'save_post' ) );
+		add_action( 'edit_attachment', array( __CLASS__, 'save_post' ) );
+		add_action( 'delete_attachment', array( __CLASS__, 'delete_post' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menus' ) );
 		add_action( 'wp_ajax_unfeature_post', array( __CLASS__, 'ajax_unfeature_post' ) );
 		add_action( 'wp_ajax_save_featured_posts_order', array(__CLASS__, 'ajax_save_featured_posts_order') );
@@ -29,10 +32,16 @@ class Voce_Featured_Posts {
 			$allowed_hooks = array();
 			foreach(  Voce_Featured_Posts::$types as $post_type => $types){
 				foreach($types as $type_key => $type_data ){
-					if($post_type == 'post')
-						$allowed_hooks[] = 'posts_page_' . $post_type . '_' . $type_key;
-					else
-						$allowed_hooks[] = $post_type . '_page_' . $post_type . '_' . $type_key;
+					switch ( $post_type ) {
+						case 'post' :
+							$allowed_hooks[] = 'posts_page_' . $post_type . '_' . $type_key;
+							break;
+						case 'attachment' :
+							$allowed_hooks[] = 'media_page_' . $post_type . '_' . $type_key;
+							break;
+						default :
+							$allowed_hooks[] = $post_type . '_page_' . $post_type . '_' . $type_key;
+					}
 				}
 
 			}
@@ -103,7 +112,15 @@ class Voce_Featured_Posts {
 				continue;
 
 			foreach ( $types as $type_key => $type_data ){
-				$parent_slug = ($post_type == 'post') ? 'edit.php' : 'edit.php?post_type=' . $post_type;
+				$parent_slug = 'edit.php?post_type=' . $post_type;
+				switch ( $post_type ) {
+					case 'post' :
+						$parent_slug = 'edit.php';
+						break;
+					case 'attachment' :
+						$parent_slug = 'upload.php';
+						break;
+				}
 				$title = $type_data['title'] . ' ' . get_post_type_object( $post_type )->labels->name;
 				add_submenu_page( $parent_slug, sprintf( 'Manage %s', $title), $title, 'manage_options', $post_type . '_' . $type_key, function() use ($type_key, $type_data, $post_type) {
 					$featured_posts = array_values(Voce_Featured_Posts::get_featured_ids( $post_type, $type_key ));
