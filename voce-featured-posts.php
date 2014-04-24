@@ -8,17 +8,18 @@ class Voce_Featured_Posts {
 	 * By default, posts are the only post type with a featured type set.
 	 * Add new types by using the Voce_Featured_Posts::add_type() method.
 	 */
-	public static $types = array(
-		'post' => array(
-			'featured' => array(
-				'title'       => 'Featured',
-				'sortable'    => true,
-				'post_status' => array( 'publish' )
-			)
-		)
-	);
+	public static $types;
 
 	public static function initialize() {
+		self::$types =  array(
+			'post' => array(
+				'featured' => array(
+					'title'       => apply_filters('featured_post_default_label', 'Featured'),
+					'sortable'    => true,
+					'post_status' => array( 'publish' )
+				)
+			)
+		);
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_metabox' ), 10, 2 );
 		add_action( 'save_post', array( __CLASS__, 'save_post' ) );
 		add_action( 'delete_post', array( __CLASS__, 'delete_post' ) );
