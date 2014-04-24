@@ -14,7 +14,7 @@ class Voce_Featured_Posts {
 		self::$types =  array(
 			'post' => array(
 				'featured' => array(
-					'title'       => apply_filters('featured_post_default_label', 'Featured'),
+					'title'       => apply_filters( 'featured_post_default_label', 'Featured' ),
 					'sortable'    => true,
 					'post_status' => array( 'publish' )
 				)
