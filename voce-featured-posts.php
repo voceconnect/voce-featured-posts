@@ -197,7 +197,7 @@ class Voce_Featured_Posts {
 				<td class="<?php echo esc_attr($column_key); ?>">
 				<?php switch($column_key){
 					case 'sort':
-						printf('<a href="#" class="sort-post" style="display:block; width:13px; height:16px; background:url(%s) no-repeat;"></a>', plugins_url('/images/sort.png', __FILE__) );
+						printf('<a href="#" class="sort-post" style="display:block; width:13px; height:16px; background:url(%s) no-repeat;"></a>', plugins_url('/img/sort.png', __FILE__) );
 					break;
 					case 'title':
 						printf( '<strong><a href="%s">%s</a></strong>', get_edit_post_link( $featured_post_id ), get_the_title( $featured_post_id ) );
