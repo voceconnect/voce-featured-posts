@@ -333,8 +333,8 @@ class Voce_Featured_Posts {
 				// if the post status is not an acceptable feature type status, then unfeature the post
 				if ( !in_array( $post_status, $statuses ) ) {
 					self::update_is_featured( $post_id, $post_type, false, $type_key );
-				} elseif ( isset( $_REQUEST[$name . '_nonce'] ) && wp_verify_nonce( $_REQUEST[$name . '_nonce'], 'updating_' . $name ) ) {
-					$is_featured = isset( $_REQUEST[$name] );
+				} elseif ( isset( $_POST[$name . '_nonce'] ) && wp_verify_nonce( $_POST[$name . '_nonce'], 'updating_' . $name ) ) {
+					$is_featured = isset( $_POST[$name] );
 					self::update_is_featured( $post_id, $post_type, $is_featured, $type_key );
 				}
 			}
