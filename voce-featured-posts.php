@@ -153,7 +153,7 @@ class Voce_Featured_Posts {
 									<thead>
 										<tr>
 											<?php foreach($table_columns as $column_key => $column_name)
-												printf('<th class="%s">%s</th>', esc_attr( $column_key ), $column_name);
+												printf('<th class="%s">%s</th>', esc_attr( $column_key ), esc_html( $column_name ) );
 											?>
 										</tr>
 									</thead>
