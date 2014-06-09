@@ -319,8 +319,9 @@ class Voce_Featured_Posts {
 	}
 
 	static function save_post( $post_id ) {
-		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) )
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) || !current_user_can( 'edit_post', $post_id ) ) {
 			return $post_id;
+		}
 
 		$post_type   = get_post_type( $post_id );
 		$post_status = get_post_status( $post_id );
