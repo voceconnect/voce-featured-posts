@@ -5,7 +5,7 @@ Contributors: kevinlangleyjr, voceplatforms
 Tags: featured  
 Requires at least: 3.2  
 Tested up to: 3.9.1  
-Stable tag: 2.4  
+Stable tag: 2.5  
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,8 +53,20 @@ Using the ```get_featured_ids()``` method of the ```Voce_Featured_Posts```, you 
 
 # Changelog
 
-**1.0**
-*Initial release.*
+**2.5**  
+*Moving nonce check to earlier in the `save_post` method*
 
-**2.1**
+**2.4**  
+*VIP escaping fixes*
+
+**2.3**  
+*Adding filter to default "Featured" label*
+
+**2.2**  
+*Fixing image source to sort.png*
+
+**2.1**  
 *Adding support for featured 'attachment'.*
+
+**1.0**  
+*Initial release.*
