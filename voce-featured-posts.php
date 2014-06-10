@@ -153,7 +153,7 @@ class Voce_Featured_Posts {
 									<thead>
 										<tr>
 											<?php foreach($table_columns as $column_key => $column_name)
-												printf('<th class="%s">%s</th>', esc_attr( $column_key ), $column_name);
+												printf('<th class="%s">%s</th>', esc_attr( $column_key ), esc_html( $column_name ) );
 											?>
 										</tr>
 									</thead>
@@ -319,8 +319,9 @@ class Voce_Featured_Posts {
 	}
 
 	static function save_post( $post_id ) {
-		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) )
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) || !current_user_can( 'edit_post', $post_id ) ) {
 			return $post_id;
+		}
 
 		$post_type   = get_post_type( $post_id );
 		$post_status = get_post_status( $post_id );
@@ -333,8 +334,8 @@ class Voce_Featured_Posts {
 				// if the post status is not an acceptable feature type status, then unfeature the post
 				if ( !in_array( $post_status, $statuses ) ) {
 					self::update_is_featured( $post_id, $post_type, false, $type_key );
-				} elseif ( isset( $_REQUEST[$name . '_nonce'] ) && wp_verify_nonce( $_REQUEST[$name . '_nonce'], 'updating_' . $name ) ) {
-					$is_featured = isset( $_REQUEST[$name] );
+				} elseif ( isset( $_POST[$name . '_nonce'] ) && wp_verify_nonce( $_POST[$name . '_nonce'], 'updating_' . $name ) ) {
+					$is_featured = isset( $_POST[$name] );
 					self::update_is_featured( $post_id, $post_type, $is_featured, $type_key );
 				}
 			}
