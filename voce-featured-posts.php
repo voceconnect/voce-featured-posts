@@ -330,11 +330,15 @@ class Voce_Featured_Posts {
 			foreach ( self::$types[$post_type] as $type_key => $type_args ) {
 				$name     = sprintf( '%s_%s', $type_key, $post_type );
 				$statuses = isset( $type_args['post_status'] ) ? $type_args['post_status'] : array();
+				
+				if ( !isset( $_POST[$name . '_nonce'] ) || !wp_verify_nonce( $_POST[$name . '_nonce'], 'updating_' . $name ) ) {
+					continue;
+				}
 
 				// if the post status is not an acceptable feature type status, then unfeature the post
 				if ( !in_array( $post_status, $statuses ) ) {
 					self::update_is_featured( $post_id, $post_type, false, $type_key );
-				} elseif ( isset( $_POST[$name . '_nonce'] ) && wp_verify_nonce( $_POST[$name . '_nonce'], 'updating_' . $name ) ) {
+				} else {
 					$is_featured = isset( $_POST[$name] );
 					self::update_is_featured( $post_id, $post_type, $is_featured, $type_key );
 				}
