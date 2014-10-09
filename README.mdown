@@ -4,8 +4,8 @@ Voce Featured Posts
 Contributors: kevinlangleyjr, voceplatforms  
 Tags: featured  
 Requires at least: 3.2  
-Tested up to: 3.9.1  
-Stable tag: 2.6  
+Tested up to: 4.0  
+Stable tag: 2.7  
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,9 @@ Using the ```get_featured_ids()``` method of the ```Voce_Featured_Posts```, you 
 ```
 
 # Changelog
+
+**2.7**  
+*Fixing sortable by adding jquery-ui-sortable js dependency*
 
 **2.6**  
 *Adding minified images*

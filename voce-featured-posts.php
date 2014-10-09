@@ -46,8 +46,10 @@ class Voce_Featured_Posts {
 				}
 
 			}
-			if ( in_array($hook, $allowed_hooks) )
-				wp_enqueue_script( 'voce-featured-posts', plugins_url( 'js/voce-featured-posts.js', __FILE__ ), array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-selectable', 'jquery-ui-mouse', 'wp-ajax-response'), SCRIPT_VERSION );
+			if ( in_array($hook, $allowed_hooks) ){
+				$deps = array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-selectable', 'jquery-ui-sortable', 'jquery-ui-mouse', 'wp-ajax-response' );
+				wp_enqueue_script( 'voce-featured-posts', plugins_url( 'js/voce-featured-posts.js', __FILE__ ), $deps, SCRIPT_VERSION );
+			}
 		} );
 
 		if ( isset($_POST['featured_ids_order']) && !empty($_POST['featured_ids_order']) )
