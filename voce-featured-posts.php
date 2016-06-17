@@ -140,14 +140,18 @@ class Voce_Featured_Posts {
 						unset($table_columns['sort']);
 
 					$table_id = ($type_data['sortable']) ? 'sortable_featured_posts_list' : 'featured_posts_list';
-					$data_attr_string = sprintf('data-nonce="%s" data-post-type="%s" data-type="%s"', wp_create_nonce('save_featured_posts_order'), $post_type, $type_key );
 					?>
 						<div class="wrap">
 							<div id="icon-tools" class="icon32"><br/></div>
-							<h2><?php echo get_admin_page_title(); ?></h2>
+							<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 							<?php if($type_data['sortable']): ?>
 								<form id="<?php echo esc_attr( $table_id.'_form' ); ?>" method="post" action="" name="<?php echo esc_attr( $table_id.'_form'); ?>" >
-								<input name="save" disabled="disabled" type="submit" style="margin-right: 10px; margin-bottom: 10px" class="alignright button-primary" id="featured_order_publish" value="Save Order" <?php echo $data_attr_string; ?> />
+								<input name="save" disabled="disabled" type="submit" style="margin-right: 10px; margin-bottom: 10px" 
+									class="alignright button-primary" id="featured_order_publish" value="Save Order" 
+									data-post-type="<?php echo esc_attr( $post_type ) ?>"
+									data-nonce="<?php echo esc_attr( wp_create_nonce( 'save_featured_posts_order' ) ) ?>"
+									data-type="<?php echo esc_attr( $type_key ) ?>"
+									 />
 							<?php endif; ?>
 								<br/>
 								<div id="ajax-response"></div>
@@ -206,15 +210,15 @@ class Voce_Featured_Posts {
 						printf( '<strong><a href="%s">%s</a></strong>', get_edit_post_link( $featured_post_id ), get_the_title( $featured_post_id ) );
 						?>
 						<div class="row-actions">
-							<a href="#" class="unfeature_post" data-nonce="<?php echo esc_attr( wp_create_nonce( 'unfeature_post' ) ); ?>" data-id="<?php echo esc_attr( $featured_post_id ); ?>" data-type="<?php echo esc_attr($type_key); ?>">Remove from list</a> |
-							<a href="<?php echo get_edit_post_link( $featured_post_id ); ?>">Edit</a> |
-							<a href="<?php echo get_post_permalink( $featured_post_id ); ?>" target="_blank">View</a>
+							<a href="#" class="unfeature_post" data-nonce="<?php echo esc_attr( wp_create_nonce( 'unfeature_post' ) ); ?>" data-id="<?php echo esc_attr( $featured_post_id ); ?>" data-type="<?php echo esc_attr( $type_key); ?>">Remove from list</a> |
+							<a href="<?php echo esc_url( get_edit_post_link( $featured_post_id ) ); ?>">Edit</a> |
+							<a href="<?php echo esc_url( get_post_permalink( $featured_post_id ) ); ?>" target="_blank">View</a>
 						</div>
 						<?php
 					break;
 
 					case 'date':
-						echo get_the_time( 'm/d/Y', $featured_post_id );
+						echo esc_html( get_the_time( 'm/d/Y', $featured_post_id ) );
 					break;
 					default:
 						do_action('get_featured_post_custom_cell', $column_key, $column_name, $featured_post_id, $type_key);
